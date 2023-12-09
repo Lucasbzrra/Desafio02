@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.EntityFrameworkCore.Query.Internal;
 using System.ComponentModel.DataAnnotations;
 
 namespace Desafio002.Models;
@@ -6,11 +6,22 @@ namespace Desafio002.Models;
 public class Url
 {
     [Key]
-    public int Id { get; set; }
-    public string url { get; set; }
-
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public string Id { get; set; } 
+    [MaxLength(50)]
+    public string URL { get; set; }
     public string UrlEncurtada { get; set; }
 
-    public DateTime DateRegistre { get; } = DateTime.Now;
+    public DateTime DataAtual { get; set; }
+
+    public Url( string uRL, string urlEncurtada, DateTime dataAtual)
+    {
+        Id=Guid.NewGuid().ToString();
+        URL = uRL;
+        UrlEncurtada = urlEncurtada;
+        DataAtual = dataAtual;
+    }
+    protected Url()
+    {
+
+    }
 }

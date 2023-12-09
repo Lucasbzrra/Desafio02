@@ -2,5 +2,6 @@
 
 public class CreateUrlDto
 {
-    public string Url { get; set; }
+    public string URL { get; set; }
+    public DateTime DataAtual { get; }= DateTime.Now;
 }

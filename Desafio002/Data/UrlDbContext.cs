@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Desafio002.Models;
 
 namespace Desafio002.Data;
@@ -12,9 +10,13 @@ public class UrlDbContext : DbContext
 
     }
     public DbSet<Url> url { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnConfiguring(optionsBuilder);
+        modelBuilder.Entity<Url>()
+             .HasIndex(x => x.UrlEncurtada).IsUnique();
+            
+        modelBuilder.Entity<Url>()
+            .HasIndex(y=>y.URL).IsUnique();
+
     }
 }

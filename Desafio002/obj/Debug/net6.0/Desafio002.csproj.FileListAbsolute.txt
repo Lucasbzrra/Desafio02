@@ -64,3 +64,11 @@ C:\Users\lucas\source\repos\Desafio002\Desafio002\obj\Debug\net6.0\refint\Desafi
 C:\Users\lucas\source\repos\Desafio002\Desafio002\obj\Debug\net6.0\Desafio002.pdb
 C:\Users\lucas\source\repos\Desafio002\Desafio002\obj\Debug\net6.0\Desafio002.genruntimeconfig.cache
 C:\Users\lucas\source\repos\Desafio002\Desafio002\obj\Debug\net6.0\ref\Desafio002.dll
+C:\Users\lucas\source\repos\Desafio002\Desafio002\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+C:\Users\lucas\source\repos\Desafio002\Desafio002\bin\Debug\net6.0\Dapper.dll
+C:\Users\lucas\source\repos\Desafio002\Desafio002\bin\Debug\net6.0\System.Data.SqlClient.dll
+C:\Users\lucas\source\repos\Desafio002\Desafio002\bin\Debug\net6.0\runtimes\win-arm64\native\sni.dll
+C:\Users\lucas\source\repos\Desafio002\Desafio002\bin\Debug\net6.0\runtimes\win-x64\native\sni.dll
+C:\Users\lucas\source\repos\Desafio002\Desafio002\bin\Debug\net6.0\runtimes\win-x86\native\sni.dll
+C:\Users\lucas\source\repos\Desafio002\Desafio002\bin\Debug\net6.0\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
+C:\Users\lucas\source\repos\Desafio002\Desafio002\bin\Debug\net6.0\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
