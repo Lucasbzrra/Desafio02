@@ -13,7 +13,8 @@ builder.Services.AddControllers();
 //Conexão com banco de dado Ms Sql Server
 
 builder.Services.AddDbContext<UrlDbContext>(opts => opts.UseSqlServer("Data Source=LUCAS\\MSSQLSERVER01; Initial Catalog=Url;User ID=sa;Password=0000"));
-builder.Services.AddScoped<EncurtadorDeUrl>();
+builder.Services.AddScoped<IUrlService, UrlService>();
+builder.Services.AddScoped<IEncurtadorUrl, EncurtadorDeUrl>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

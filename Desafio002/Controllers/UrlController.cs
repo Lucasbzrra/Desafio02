@@ -1,10 +1,7 @@
-﻿using Dapper;
-using Desafio002.Data.Dtos;
+﻿using Desafio002.Data.Dtos;
 using Desafio002.Models;
 using Desafio002.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 
 namespace Desafio002.Controllers;
 
@@ -12,101 +9,69 @@ namespace Desafio002.Controllers;
 [Route("/Controller")]
 public class UrlController : ControllerBase
 {
-    private readonly string _connectionstring; 
-    public UrlController(IConfiguration configuration)
+    private readonly IUrlService _urlService;
+    private readonly IEncurtadorUrl _encurtadorUrl;
+    public UrlController( IUrlService urlService, IEncurtadorUrl encurtadorUrl)
     {
 
-        _connectionstring = configuration.GetConnectionString("UrlConnection");
-
+        _urlService = urlService;
+        _encurtadorUrl = encurtadorUrl;
     }
+
     [HttpPost("/post/url")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Post(CreateUrlDto url)
     {
-        string encurtado = EncurtadorDeUrl.Encurtador();
+        string encurtado = _encurtadorUrl.Encurtador();
         Url URL = new Url(url.URL,encurtado,url.DataAtual);
-        var paramenter = new
+        if(_urlService.Create(URL).Result==1)
         {
-            urlparamaterid=URL.Id,
-            urlparameter = URL.URL,
-            urlparameterencurtada = URL.UrlEncurtada,
-            urlparameterdata=url.DataAtual
-        };
-        using (var sqlconnection= new SqlConnection(_connectionstring))
-        {
-            string query = "insert into url (Id,URL,UrlEncurtada,DataAtual) values (@urlparamaterid,@urlparameter, @urlparameterencurtada, @urlparameterdata)";
-            var INSERT= await sqlconnection.ExecuteAsync(query, paramenter);
-            return Ok();
+            return Ok(URL);
         }
-       
-
+        return BadRequest();
+      
     }
+
     [HttpGet("/get-{url}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetUrl(string url)
+    public  async Task<IActionResult> GetUrl(string url)
     {
-        var parameter = new
-        {
-            url,
-        };
-        using (var sqlconnection = new SqlConnection(_connectionstring))
-        {
-           string sql = "select * from url where URL=@url";
-            var geturl=await sqlconnection.QuerySingleAsync<Url>(sql,parameter);
-            return Ok(geturl.UrlEncurtada);
-        }
-        
+       var result = await _urlService.GetUrl(url);
+        return Ok(result);
+
     }
+
     [HttpGet("/get/list")]
     public async Task<IActionResult> GetList()
     {
-        using (var sqlconncection = new SqlConnection(_connectionstring))
-        {
-             string query = "select * from url";
-            var list=await sqlconncection.QueryAsync<Url>(query);
-            return Ok(list);
-        }
+        var result = await _urlService.GetList();
+        return Ok(result);
     }
+
     [HttpPut("/put/url/{id}")]
+    [ProducesResponseType(StatusCodes.Status202Accepted)]
     public async Task<IActionResult> Puturl(string id,[FromBody] UpdateUrlDto updateUrlDto)
     {
-        string encurtado = EncurtadorDeUrl.Encurtador();
-        Url URL = new Url(updateUrlDto.URL, encurtado, updateUrlDto.DataAtual);
-        var parameter = new
-        {
-            parameterurl = URL.URL,
-            parameterurlencurtada = URL.UrlEncurtada,
-            parameterdata = URL.DataAtual,
-            parameterid = id
-        };
-        using (var sqlconnecntion = new SqlConnection(_connectionstring))
-        {
-            var query = "update url set URL = @parameterurl, UrlEncurtada=@parameterurlencurtada, DataAtual=@parameterdata where id=@parameterid";
-            var put=await sqlconnecntion.ExecuteAsync(query,parameter);
-            return NoContent();
-        }
+        string encurtado = _encurtadorUrl.Encurtador();
+        Url url = new Url(updateUrlDto.URL, encurtado, updateUrlDto.DataAtual);
+        await _urlService.Update(id, url);
+        return Accepted( url);
     }
-    [ProducesResponseType(StatusCodes.Status202Accepted)]
+
+    
     [HttpDelete("/Delete/expired/url/{id?}")]
-    public async Task<IActionResult> delete([FromQuery] string? id )
+    [ProducesResponseType(StatusCodes.Status202Accepted)]
+    public async Task<IActionResult> delete( string? id )
     {
         if(id is null)
         {
-            using (var sqlconnection = new SqlConnection(_connectionstring))
-            {
-                var query = "delete  from url where DATEDIFF(day,DataAtual,GETDATE())>=1;";
-                var delete=await sqlconnection.ExecuteAsync(query);
-                return Accepted();
-            }
-
-        }
-        using (var sqlconnection = new SqlConnection(_connectionstring))
-        {
-            var paramenter = new {Id= id};
-            var query = "delete  from url where id=@Id";
-            var delete= await sqlconnection.ExecuteAsync(query,paramenter);
+          await  _urlService.DeleteExpired();
             return Accepted();
         }
+        await _urlService.DeleteUrl(id);
+        return Accepted();
+        
        
     } 
    
